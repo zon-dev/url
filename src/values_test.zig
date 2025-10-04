@@ -6,17 +6,17 @@ const URL = @import("url.zig");
 const Values = @import("values.zig");
 
 test "sample1" {
-    var values: std.StringHashMap(std.ArrayList([]const u8)) = std.StringHashMap(std.ArrayList([]const u8)).init(allocator);
+    var values: std.StringHashMap(std.array_list.Managed([]const u8)) = std.StringHashMap(std.array_list.Managed([]const u8)).init(allocator);
     defer values.deinit();
-    var name = std.ArrayList([]const u8).initCapacity(allocator, 0) catch return;
-    defer name.deinit(allocator);
-    try name.append(allocator, "Ava");
+    var name = std.array_list.Managed([]const u8).initCapacity(allocator, 0) catch return;
+    defer name.deinit();
+    try name.append("Ava");
 
-    var friend = std.ArrayList([]const u8).initCapacity(allocator, 0) catch return;
-    defer friend.deinit(allocator);
-    try friend.append(allocator, "Jess");
-    try friend.append(allocator, "Sarah");
-    try friend.append(allocator, "Zoe");
+    var friend = std.array_list.Managed([]const u8).initCapacity(allocator, 0) catch return;
+    defer friend.deinit();
+    try friend.append("Jess");
+    try friend.append("Sarah");
+    try friend.append("Zoe");
 
     try values.put("name", name);
     try values.put("friend", friend);
@@ -35,7 +35,7 @@ test "sample1" {
 
 test "sample2" {
     const text = "name=Ava&friend=Jess&friend=Sarah&friend=Zoe";
-    var values: std.StringHashMap(std.ArrayList([]const u8)) = std.StringHashMap(std.ArrayList([]const u8)).init(allocator);
+    var values: std.StringHashMap(std.array_list.Managed([]const u8)) = std.StringHashMap(std.array_list.Managed([]const u8)).init(allocator);
     defer values.deinit();
     try URL.parseQuery(&values, text);
     try std.testing.expectEqualStrings("Ava", values.get("name").?.items[0]);
@@ -65,17 +65,17 @@ test "sample3" {
 }
 
 test "encode" {
-    var name = std.ArrayList([]const u8).initCapacity(allocator, 0) catch return;
-    defer name.deinit(allocator);
-    try name.append(allocator, "Ava");
+    var name = std.array_list.Managed([]const u8).initCapacity(allocator, 0) catch return;
+    defer name.deinit();
+    try name.append("Ava");
 
-    var friend = std.ArrayList([]const u8).initCapacity(allocator, 0) catch return;
-    defer friend.deinit(allocator);
-    try friend.append(allocator, "Jess");
-    try friend.append(allocator, "Sarah");
-    try friend.append(allocator, "Zoe");
+    var friend = std.array_list.Managed([]const u8).initCapacity(allocator, 0) catch return;
+    defer friend.deinit();
+    try friend.append("Jess");
+    try friend.append("Sarah");
+    try friend.append("Zoe");
 
-    var values: std.StringHashMap(std.ArrayList([]const u8)) = std.StringHashMap(std.ArrayList([]const u8)).init(allocator);
+    var values: std.StringHashMap(std.array_list.Managed([]const u8)) = std.StringHashMap(std.array_list.Managed([]const u8)).init(allocator);
     defer values.deinit();
 
     try values.put("name", name);

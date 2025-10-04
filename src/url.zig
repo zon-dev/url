@@ -82,7 +82,7 @@ pub fn parseUrl(self: *URL, text: []const u8) ParseError!*URL {
         std.debug.assert(reader.get().? == '?');
         self.query = reader.readUntil(isQuerySeparator);
         if (self.values == null) {
-            self.values = std.StringHashMap(std.ArrayList([]const u8)).init(self.allocator);
+            self.values = std.StringHashMap(std.array_list.Managed([]const u8)).init(self.allocator);
         }
         try parseQuery(&self.values.?, self.query.?);
     }
@@ -149,14 +149,14 @@ pub fn parseQuery(map: *std.StringHashMap(std.array_list.Managed([]const u8)), u
         var al: std.array_list.Managed([]const u8) = undefined;
         const v = map.get(key.?);
         if (v == null) {
-            al = std.ArrayList([]const u8).initCapacity(allocator, 0) catch continue;
-            al.append(allocator, value.?) catch continue;
+            al = std.array_list.Managed([]const u8).initCapacity(allocator, 0) catch continue;
+            al.append(value.?) catch continue;
             map.put(key.?, al) catch continue;
             continue;
         }
 
         al = v.?;
-        al.append(allocator, value.?) catch continue;
+        al.append(value.?) catch continue;
         map.put(key.?, al) catch continue;
     }
 }

@@ -35,7 +35,7 @@ test "parseUri 1" {
 
     // query=1&query2=2
 
-    var qm = std.StringHashMap(std.ArrayList([]const u8)).init(std.testing.allocator);
+    var qm = std.StringHashMap(std.array_list.Managed([]const u8)).init(std.testing.allocator);
     URL.parseQuery(&qm, result.query.?) catch return;
     defer qm.clearAndFree();
 
