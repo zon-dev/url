@@ -19,14 +19,14 @@ fragment: ?[]const u8 = undefined,
 query: ?[]const u8 = undefined,
 
 // querymap: ?StringHashMap(std.ArrayList([]const u8))
-values: ?std.StringHashMap(std.ArrayList([]const u8)) = undefined,
+values: ?std.StringHashMap(std.array_list.Managed([]const u8)) = undefined,
 
 // https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Web_mechanics/What_is_a_URL
 
 pub fn init(self: URL) URL {
     return .{
         .allocator = self.allocator,
-        .values = std.StringHashMap(std.ArrayList([]const u8)).init(self.allocator),
+        .values = std.StringHashMap(std.array_list.Managed([]const u8)).init(self.allocator),
     };
 }
 
@@ -123,7 +123,7 @@ pub fn parseUri(self: *URL, text: []const u8) ParseError!*URL {
     return self;
 }
 
-pub fn parseQuery(map: *std.StringHashMap(std.ArrayList([]const u8)), uri_query: []const u8) !void {
+pub fn parseQuery(map: *std.StringHashMap(std.array_list.Managed([]const u8)), uri_query: []const u8) !void {
     const allocator = std.heap.page_allocator;
 
     var queryitmes = std.mem.splitSequence(u8, uri_query, "&");
@@ -146,7 +146,7 @@ pub fn parseQuery(map: *std.StringHashMap(std.ArrayList([]const u8)), uri_query:
             continue;
         }
 
-        var al: std.ArrayList([]const u8) = undefined;
+        var al: std.array_list.Managed([]const u8) = undefined;
         const v = map.get(key.?);
         if (v == null) {
             al = std.ArrayList([]const u8).initCapacity(allocator, 0) catch continue;
