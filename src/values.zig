@@ -1,6 +1,6 @@
 const std = @import("std");
 const StringArrayHashMap = std.StringArrayHashMap;
-const ArrayList = std.array_list.Managed;
+const ArrayList = std.ArrayList;
 
 // pub fn has(list: ArrayList([]const u8), value: []const u8) bool {
 //     for (list.items) |item| {

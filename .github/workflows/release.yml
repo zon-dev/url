@@ -17,13 +17,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          sudo apt update
-          sudo apt install snap
-          sudo snap install zig --classic --beta
+      - name: Setup Zig
+        uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: master
 
-      - uses: actions/checkout@v4
+      - name: Build
+        run: zig build
+
+      - name: Run tests
+        run: zig build test
+
+      - name: Create release archive
+        shell: bash
+        run: |
+          if [ "${{ matrix.platform }}" == "windows-latest" ]; then
+            7z a url-${{ matrix.platform }}.zip zig-out/
+          else
+            tar czf url-${{ matrix.platform }}.tar.gz zig-out/
+          fi
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            url-${{ matrix.platform }}.tar.gz
+            url-${{ matrix.platform }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
